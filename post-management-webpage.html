@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL 기반 게시글 관리 프로그램</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #post-form, #post-list {
+            margin-top: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+        }
+        #posts {
+            margin-top: 20px;
+        }
+        .post {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>URL 기반 게시글 관리 프로그램</h1>
+    
+    <div id="post-form">
+        <h2>새 게시글 작성</h2>
+        <input type="text" id="title" placeholder="제목" required>
+        <textarea id="content" placeholder="내용" required></textarea>
+        <input type="url" id="url" placeholder="URL" required>
+        <button onclick="addPost()">게시글 추가</button>
+    </div>
+
+    <div id="post-list">
+        <h2>게시글 목록</h2>
+        <div id="posts"></div>
+    </div>
+
+    <script>
+        let posts = [];
+
+        function addPost() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const url = document.getElementById('url').value;
+
+            if (title && content && url) {
+                posts.push({ title, content, url });
+                updatePostList();
+                clearForm();
+            } else {
+                alert('모든 필드를 입력해주세요.');
+            }
+        }
+
+        function deletePost(index) {
+            posts.splice(index, 1);
+            updatePostList();
+        }
+
+        function updatePostList() {
+            const postsDiv = document.getElementById('posts');
+            postsDiv.innerHTML = '';
+            posts.forEach((post, index) => {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'post';
+                postDiv.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <p>${post.content}</p>
+                    <p><a href="${post.url}" target="_blank">${post.url}</a></p>
+                    <button onclick="deletePost(${index})">삭제</button>
+                `;
+                postsDiv.appendChild(postDiv);
+            });
+        }
+
+        function clearForm() {
+            document.getElementById('title').value = '';
+            document.getElementById('content').value = '';
+            document.getElementById('url').value = '';
+        }
+
+        // 페이지 로드 시 경고 메시지 표시
+        window.onload = function() {
+            alert('이 프로그램은 브라우저를 닫거나 새로고침하면 모든 게시글이 삭제됩니다.');
+        };
+
+        // 페이지를 떠날 때 경고 메시지 표시
+        window.onbeforeunload = function() {
+            return '페이지를 떠나면 모든 게시글이 삭제됩니다. 계속하시겠습니까?';
+        };
+    </script>
+</body>
+</html>
